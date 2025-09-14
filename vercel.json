@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "builds": [{ "src": "package.json", "use": "@vercel/static-build" }],
+  "routes": [
+    { "src": "/static/(.*)", "dest": "/static/$1" },
+    { "src": "/favicon.ico", "dest": "/favicon.ico" },
+    { "src": "/asset-manifest.json", "dest": "/asset-manifest.json" },
+    { "src": "/manifest.json", "dest": "/manifest.json" },
+    { "src": "/logo(.*)", "dest": "/logo$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ],
+  "env": {
+    "REACT_APP_FIREBASE_API_KEY": "AIzaSyBDgnBJQpV8yPUz2iF-eQNKbeO5He4VhvI",
+    "REACT_APP_FIREBASE_AUTH_DOMAIN": "war-clash-f339c.firebaseapp.com",
+    "REACT_APP_FIREBASE_PROJECT_ID": "war-clash-f339c",
+    "REACT_APP_FIREBASE_STORAGE_BUCKET": "war-clash-f339c.firebasestorage.app",
+    "REACT_APP_FIREBASE_MESSAGING_SENDER_ID": "288462814307",
+    "REACT_APP_FIREBASE_APP_ID": "1:288462814307:web:d7c5e116ddf2274fa54c56",
+    "REACT_APP_FIREBASE_MEASUREMENT_ID": "G-P44QEN5R0D"
+  }
+}
+
+
