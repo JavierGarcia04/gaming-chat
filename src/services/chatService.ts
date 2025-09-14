@@ -7,14 +7,12 @@ import {
   getDocs, 
   updateDoc,
   onSnapshot,
-  orderBy,
   serverTimestamp,
-  limit,
   getDoc
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { Chat, Message } from '../types';
-import { v4 as uuidv4 } from 'uuid';
+// Removed unused uuidv4 import
 import { EncryptionService } from './encryptionService';
 
 export class ChatService {

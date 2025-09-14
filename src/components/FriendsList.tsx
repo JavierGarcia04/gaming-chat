@@ -6,7 +6,7 @@ import { User, Friend } from '../types';
 import { FriendService } from '../services/friendService';
 import { UserService } from '../services/userService';
 import { ChatService } from '../services/chatService';
-import { UserPlus, Check, X, MessageCircle, Search } from 'lucide-react';
+import { UserPlus, MessageCircle, Search } from 'lucide-react';
 
 const FriendsContainer = styled.div`
   border-top: 1px solid #202225;
@@ -163,11 +163,7 @@ const UserResultInfo = styled.div`
   margin-left: 12px;
 `;
 
-const RequestsTitle = styled.h4`
-  color: #dcddde;
-  font-size: 14px;
-  margin: 0 0 12px 0;
-`;
+// Removed unused RequestsTitle styled component
 
 const FriendsListComponent: React.FC = () => {
   const { currentUser } = useAuth();
