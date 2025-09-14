@@ -16,6 +16,20 @@ import { Chat, Message } from '../types';
 import { EncryptionService } from './encryptionService';
 
 export class ChatService {
+  static async createGroupChat(name: string, creatorId: string, participantIds: string[]): Promise<string> {
+    const uniqueParticipants = Array.from(new Set([creatorId, ...participantIds])).sort();
+
+    const chatData = {
+      participants: uniqueParticipants,
+      type: 'group' as const,
+      name,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    const docRef = await addDoc(collection(db, 'chats'), chatData);
+    return docRef.id;
+  }
   static async createDirectChat(userId1: string, userId2: string): Promise<string> {
     // Check if chat already exists
     const existingChat = await this.getDirectChat(userId1, userId2);

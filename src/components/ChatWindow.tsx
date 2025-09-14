@@ -5,6 +5,7 @@ import { Input, Button, Avatar, StatusIndicator } from '../styles/GlobalStyles';
 import { Chat, Message, User } from '../types';
 import { ChatService } from '../services/chatService';
 import { Send, Phone, Video, MoreVertical, Menu } from 'lucide-react';
+import { UserService } from '../services/userService';
 
 const ChatContainer = styled.div`
   display: flex;
@@ -239,6 +240,7 @@ const ChatWindow: React.FC<ChatWindowWithSidebar> = ({ chat, otherUser, onOpenSi
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [participantsById, setParticipantsById] = useState<{ [key: string]: User }>(() => ({}));
 
   useEffect(() => {
     if (!chat.id) {
@@ -254,6 +256,20 @@ const ChatWindow: React.FC<ChatWindowWithSidebar> = ({ chat, otherUser, onOpenSi
 
     return unsubscribe;
   }, [chat.id]);
+
+  // Load participant info for group chats to display names
+  useEffect(() => {
+    const loadParticipants = async () => {
+      if (chat.type !== 'group') return;
+      const ids = chat.participants || [];
+      if (!ids.length) return;
+      const users = await Promise.all(ids.map((id) => UserService.getUser(id)));
+      const mapping: { [key: string]: User } = {};
+      users.filter(Boolean).forEach((u) => { mapping[(u as User).uid] = u as User; });
+      setParticipantsById(mapping);
+    };
+    loadParticipants();
+  }, [chat.type, chat.participants]);
 
   useEffect(() => {
     scrollToBottom();
@@ -330,6 +346,17 @@ const ChatWindow: React.FC<ChatWindowWithSidebar> = ({ chat, otherUser, onOpenSi
   const renderMessage = (message: Message, index: number) => {
     const isOwn = message.senderId === currentUser?.uid;
     const showAvatar = index === 0 || messages[index - 1].senderId !== message.senderId;
+    const isGroup = chat.type === 'group';
+    const shouldShowHeader = isGroup || showAvatar;
+
+    const getSenderName = (userId: string): string => {
+      if (userId === currentUser?.uid) return currentUser?.displayName || 'You';
+      if (isGroup) {
+        const u = participantsById[userId];
+        return u?.displayName || 'Unknown User';
+      }
+      return otherUser?.displayName || 'Unknown User';
+    };
     
     console.log('Rendering message:', { 
       messageId: message.id, 
@@ -345,17 +372,19 @@ const ChatWindow: React.FC<ChatWindowWithSidebar> = ({ chat, otherUser, onOpenSi
       <MessageComponent key={message.id}>
         {!isOwn && showAvatar && (
           <Avatar size={32}>
-            {otherUser?.displayName?.charAt(0).toUpperCase() || '?'}
+            {(chat.type === 'group'
+              ? participantsById[message.senderId]?.displayName?.charAt(0).toUpperCase()
+              : otherUser?.displayName?.charAt(0).toUpperCase()) || '?'}
           </Avatar>
         )}
         {!isOwn && !showAvatar && <div style={{ width: 32 }} />}
         
           <MessageContent>
-            {showAvatar && (
+            {shouldShowHeader && (
               <MessageHeader>
-                {!isOwn && (
+                {(isGroup || !isOwn) && (
                   <MessageAuthor>
-                    {otherUser?.displayName || 'Unknown User'}
+                    {getSenderName(message.senderId)}
                   </MessageAuthor>
                 )}
                 <MessageTimestamp>
