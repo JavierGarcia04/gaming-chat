@@ -12,10 +12,13 @@ export const GlobalStyle = createGlobalStyle`
     background-color: #36393f;
     color: #dcddde;
     overflow: hidden;
+    overscroll-behavior-y: none;
+    -webkit-text-size-adjust: 100%;
   }
 
   html, body, #root {
     height: 100%;
+    min-height: 100%;
   }
 
   ::-webkit-scrollbar {
@@ -37,22 +40,38 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 export const Container = styled.div`
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 `;
 
 export const MainContainer = styled.div`
   display: flex;
-  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
 `;
 
-export const Sidebar = styled.div`
+export const Sidebar = styled.div<{ open?: boolean }>`
   width: 300px;
   background-color: #2f3136;
   display: flex;
   flex-direction: column;
   border-right: 1px solid #202225;
+  min-height: 0;
+  overflow: hidden;
+  @media (max-width: 768px) {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    transform: ${({ open }) => (open ? 'translateX(0)' : 'translateX(-100%)')};
+    transition: transform 0.25s ease;
+    z-index: 1000;
+    width: 80vw;
+    max-width: 320px;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.4);
+  }
 `;
 
 export const ChatArea = styled.div`
@@ -60,6 +79,7 @@ export const ChatArea = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #36393f;
+  min-height: 0;
 `;
 
 export const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'danger' }>`
