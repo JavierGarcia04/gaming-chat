@@ -24,7 +24,10 @@ const SidebarTitle = styled.h2`
 const ChatsList = styled.div`
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 10px;
+  min-height: 0;
 `;
 
 interface ChatItemProps {
@@ -95,11 +98,23 @@ const EmptyState = styled.div`
   }
 `;
 
+const MobileOverlay = styled.div<{ open: boolean }>`
+  display: none;
+  @media (max-width: 768px) {
+    display: ${({ open }) => (open ? 'block' : 'none')};
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 900;
+  }
+`;
+
 const ChatInterface: React.FC = () => {
   const { currentUser } = useAuth();
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [chatUsers, setChatUsers] = useState<{ [key: string]: User }>({});
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -157,9 +172,14 @@ const ChatInterface: React.FC = () => {
     return prefix + `Sent a ${chat.lastMessage.type}`;
   };
 
+  const handleOpenChat = (chat: Chat) => {
+    setSelectedChat(chat);
+    setSidebarOpen(false);
+  };
+
   return (
     <MainContainer>
-      <Sidebar>
+      <Sidebar open={sidebarOpen}>
         <SidebarHeader>
           <SidebarTitle>Direct Messages</SidebarTitle>
         </SidebarHeader>
@@ -169,7 +189,7 @@ const ChatInterface: React.FC = () => {
             <ChatItem
               key={chat.id}
               active={selectedChat?.id === chat.id}
-              onClick={() => setSelectedChat(chat)}
+              onClick={() => handleOpenChat(chat)}
             >
               <ChatItemAvatar>
                 {getChatAvatar(chat)}
@@ -187,6 +207,7 @@ const ChatInterface: React.FC = () => {
         <FriendsList />
         <UserPanel />
       </Sidebar>
+      <MobileOverlay open={sidebarOpen} onClick={() => setSidebarOpen(false)} />
 
       <ChatArea>
         {selectedChat ? (
@@ -196,6 +217,7 @@ const ChatInterface: React.FC = () => {
               ? chatUsers[selectedChat.participants.find(id => id !== currentUser?.uid) || ''] 
               : undefined
             }
+            onOpenSidebar={() => setSidebarOpen(true)}
           />
         ) : (
           <EmptyState>

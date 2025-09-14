@@ -4,12 +4,13 @@ import { useAuth } from '../contexts/AuthContext';
 import { Input, Button, Avatar, StatusIndicator } from '../styles/GlobalStyles';
 import { Chat, Message, User } from '../types';
 import { ChatService } from '../services/chatService';
-import { Send, Phone, Video, MoreVertical } from 'lucide-react';
+import { Send, Phone, Video, MoreVertical, Menu } from 'lucide-react';
 
 const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
 `;
 
 const ChatHeader = styled.div`
@@ -43,6 +44,20 @@ const ChatActions = styled.div`
   gap: 8px;
 `;
 
+const MobileMenuButton = styled.button`
+  display: none;
+  @media (max-width: 768px) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: #dcddde;
+    padding: 8px;
+    border-radius: 4px;
+  }
+`;
+
 const ActionButton = styled.button`
   background: none;
   border: none;
@@ -61,10 +76,13 @@ const ActionButton = styled.button`
 const MessagesContainer = styled.div`
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-height: 0;
 `;
 
 const MessageGroup = styled.div`
@@ -151,7 +169,7 @@ const OtherMessage = styled(MessageGroup)`
 `;
 
 const InputContainer = styled.div`
-  padding: 20px;
+  padding: 16px 20px calc(env(safe-area-inset-bottom) + 16px);
   background-color: #36393f;
   border-top: 1px solid #202225;
 `;
@@ -211,7 +229,11 @@ interface ChatWindowProps {
   otherUser?: User;
 }
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ chat, otherUser }) => {
+interface ChatWindowWithSidebar extends ChatWindowProps {
+  onOpenSidebar?: () => void;
+}
+
+const ChatWindow: React.FC<ChatWindowWithSidebar> = ({ chat, otherUser, onOpenSidebar }) => {
   const { currentUser } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -374,6 +396,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat, otherUser }) => {
   return (
     <ChatContainer>
       <ChatHeader>
+        <MobileMenuButton onClick={onOpenSidebar} aria-label="Open menu">
+          <Menu size={20} />
+        </MobileMenuButton>
         <div style={{ position: 'relative' }}>
           <Avatar size={32}>
             {getChatTitle().charAt(0).toUpperCase()}
