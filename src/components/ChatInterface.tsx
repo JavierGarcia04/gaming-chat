@@ -238,6 +238,7 @@ const ChatInterface: React.FC = () => {
   const [friendIds, setFriendIds] = useState<string[]>([]);
   const [friendsById, setFriendsById] = useState<{ [key: string]: User }>({});
   const [selectedFriendIds, setSelectedFriendIds] = useState<Set<string>>(new Set());
+  const [groupMemberQuery, setGroupMemberQuery] = useState('');
 
   useEffect(() => {
     if (!currentUser) return;
@@ -408,12 +409,29 @@ const ChatInterface: React.FC = () => {
             />
           </ModalSection>
           <ModalSection>
+            <Label>Buscar usuarios</Label>
+            <TextInput
+              value={groupMemberQuery}
+              onChange={(e) => setGroupMemberQuery(e.target.value)}
+              placeholder="Buscar por nombre o código de amigo"
+            />
+          </ModalSection>
+          <ModalSection>
             <Label>Invitar amigos</Label>
             <FriendsSelectList>
               {friendIds.length === 0 && (
                 <div style={{ padding: '12px', color: '#72767d' }}>No tienes amigos todavía.</div>
               )}
-              {friendIds.map((id) => {
+              {friendIds
+                .filter((id) => {
+                  if (!groupMemberQuery.trim()) return true;
+                  const friend = friendsById[id];
+                  const q = groupMemberQuery.toLowerCase();
+                  const name = friend?.displayName?.toLowerCase() || '';
+                  const code = friend?.friendCode?.toLowerCase?.() || String(friend?.friendCode || '');
+                  return name.includes(q) || code.includes(q);
+                })
+                .map((id) => {
                 const friend = friendsById[id];
                 const selected = selectedFriendIds.has(id);
                 return (
@@ -430,6 +448,16 @@ const ChatInterface: React.FC = () => {
                   </FriendRow>
                 );
               })}
+              {friendIds.length > 0 && friendIds.filter((id) => {
+                if (!groupMemberQuery.trim()) return false; // we only show this when searching and none matched
+                const friend = friendsById[id];
+                const q = groupMemberQuery.toLowerCase();
+                const name = friend?.displayName?.toLowerCase() || '';
+                const code = friend?.friendCode?.toLowerCase?.() || String(friend?.friendCode || '');
+                return name.includes(q) || code.includes(q);
+              }).length === 0 && groupMemberQuery.trim() && (
+                <div style={{ padding: '12px', color: '#72767d' }}>No se encontraron resultados.</div>
+              )}
             </FriendsSelectList>
           </ModalSection>
           <ModalActions>
