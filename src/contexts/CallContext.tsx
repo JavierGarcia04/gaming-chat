@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { Call, User } from '../types';
+import { Call } from '../types';
 import { CallService } from '../services/callService';
 import { useAuth } from './AuthContext';
 

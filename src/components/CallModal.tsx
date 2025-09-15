@@ -152,7 +152,7 @@ const CallModal: React.FC<CallModalProps> = ({
   const [isVideoEnabled, setIsVideoEnabled] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [, setRemoteStream] = useState<MediaStream | null>(null);
 
   // Timer effect for active calls
   useEffect(() => {
@@ -203,7 +203,7 @@ const CallModal: React.FC<CallModalProps> = ({
       remoteVideoRef.current.srcObject = remote;
       setRemoteStream(remote);
     }
-  }, []);
+  }, [call, localStream]);
 
   const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
