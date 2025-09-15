@@ -194,7 +194,7 @@ const CallModal: React.FC<CallModalProps> = ({
         localStream.getTracks().forEach(track => track.stop());
       }
     };
-  }, [call?.status, call?.type]);
+  }, [call?.status, call?.type, localStream]);
 
   // Handle remote stream
   useEffect(() => {
