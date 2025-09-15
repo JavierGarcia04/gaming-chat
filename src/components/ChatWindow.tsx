@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
+import { useCall } from '../contexts/CallContext';
 import { Input, Button, Avatar, StatusIndicator } from '../styles/GlobalStyles';
 import { Chat, Message, User } from '../types';
 import { ChatService } from '../services/chatService';
@@ -236,6 +237,7 @@ interface ChatWindowWithSidebar extends ChatWindowProps {
 
 const ChatWindow: React.FC<ChatWindowWithSidebar> = ({ chat, otherUser, onOpenSidebar }) => {
   const { currentUser } = useAuth();
+  const { initiateCall } = useCall();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -325,6 +327,20 @@ const ChatWindow: React.FC<ChatWindowWithSidebar> = ({ chat, otherUser, onOpenSi
       return `${otherUser.status} • Last seen ${otherUser.lastSeen.toLocaleString()}`;
     }
     return 'User not found';
+  };
+
+  const handleVoiceCall = () => {
+    if (!currentUser) return;
+    
+    const participants = chat.participants.filter(id => id !== currentUser.uid);
+    initiateCall(chat.id, participants, 'voice');
+  };
+
+  const handleVideoCall = () => {
+    if (!currentUser) return;
+    
+    const participants = chat.participants.filter(id => id !== currentUser.uid);
+    initiateCall(chat.id, participants, 'video');
   };
 
   const formatMessageTime = (timestamp: Date) => {
@@ -451,10 +467,10 @@ const ChatWindow: React.FC<ChatWindowWithSidebar> = ({ chat, otherUser, onOpenSi
         </ChatHeaderInfo>
 
         <ChatActions>
-          <ActionButton title="Start voice call">
+          <ActionButton title="Start voice call" onClick={handleVoiceCall}>
             <Phone size={20} />
           </ActionButton>
-          <ActionButton title="Start video call">
+          <ActionButton title="Start video call" onClick={handleVideoCall}>
             <Video size={20} />
           </ActionButton>
           <ActionButton title="More options">
