@@ -16,12 +16,14 @@ const ChatContainer = styled.div`
 `;
 
 const ChatHeader = styled.div`
-  padding: 16px 20px;
-  border-bottom: 1px solid #202225;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
-  gap: 12px;
-  background-color: #36393f;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 `;
 
 const ChatHeaderInfo = styled.div`
@@ -29,16 +31,18 @@ const ChatHeaderInfo = styled.div`
 `;
 
 const ChatTitle = styled.h2`
-  color: #dcddde;
-  font-size: 16px;
-  font-weight: 600;
+  color: #f1f3f4;
+  font-size: 18px;
+  font-weight: 700;
   margin: 0;
+  letter-spacing: -0.025em;
 `;
 
 const ChatSubtitle = styled.div`
-  color: #72767d;
-  font-size: 12px;
-  margin-top: 2px;
+  color: #a0a6b0;
+  font-size: 13px;
+  margin-top: 4px;
+  font-weight: 400;
 `;
 
 const ChatActions = styled.div`
@@ -61,17 +65,25 @@ const MobileMenuButton = styled.button`
 `;
 
 const ActionButton = styled.button`
-  background: none;
-  border: none;
-  color: #72767d;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a0a6b0;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  padding: 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 
   &:hover {
-    background-color: #40444b;
-    color: #dcddde;
+    background: rgba(255, 255, 255, 0.1);
+    color: #f1f3f4;
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -80,17 +92,30 @@ const MessagesContainer = styled.div`
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   min-height: 0;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.01) 0%, transparent 70%);
 `;
 
 const MessageGroup = styled.div`
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 14px;
+  animation: slideInMessage 0.3s ease-out;
+
+  @keyframes slideInMessage {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 `;
 
 const MessageContent = styled.div`
@@ -100,26 +125,30 @@ const MessageContent = styled.div`
 const MessageHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: 10px;
+  margin-bottom: 6px;
 `;
 
 const MessageAuthor = styled.span`
-  color: #dcddde;
-  font-weight: 500;
-  font-size: 14px;
+  color: #f1f3f4;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
 `;
 
 const MessageTimestamp = styled.span`
-  color: #72767d;
+  color: #a0a6b0;
   font-size: 12px;
+  opacity: 0.8;
+  font-weight: 400;
 `;
 
 const MessageText = styled.div`
-  color: #dcddde;
-  font-size: 14px;
-  line-height: 1.4;
+  color: #f1f3f4;
+  font-size: 15px;
+  line-height: 1.5;
   word-wrap: break-word;
+  font-weight: 400;
 `;
 
 const OwnMessage = styled(MessageGroup)`
@@ -134,15 +163,30 @@ const OwnMessage = styled(MessageGroup)`
   }
   
   ${MessageText} {
-    background-color: #5865f2;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 10px 14px;
-    border-radius: 18px;
-    border-bottom-right-radius: 6px;
+    padding: 12px 18px;
+    border-radius: 20px;
+    border-bottom-right-radius: 8px;
     display: inline-block;
-    max-width: 70%;
-    margin-bottom: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 75%;
+    margin-bottom: 6px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    font-weight: 400;
+    position: relative;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-bottom-right-radius: 8px;
+    }
   }
 `;
 
@@ -157,51 +201,98 @@ const OtherMessage = styled(MessageGroup)`
   }
   
   ${MessageText} {
-    background-color: #40444b;
-    color: #dcddde;
-    padding: 10px 14px;
-    border-radius: 18px;
-    border-bottom-left-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #f1f3f4;
+    padding: 12px 18px;
+    border-radius: 20px;
+    border-bottom-left-radius: 8px;
     display: inline-block;
-    max-width: 70%;
-    margin-bottom: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border: 1px solid #4f545c;
+    max-width: 75%;
+    margin-bottom: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px);
+    font-weight: 400;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: -1px;
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-bottom-left-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: none;
+      border-right: none;
+    }
   }
 `;
 
 const InputContainer = styled.div`
-  padding: 16px 20px calc(env(safe-area-inset-bottom) + 16px);
-  background-color: #36393f;
-  border-top: 1px solid #202225;
+  padding: 20px 24px calc(env(safe-area-inset-bottom) + 20px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
 `;
 
 const MessageInputContainer = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: center;
 `;
 
 const MessageInput = styled(Input)`
   flex: 1;
-  border-radius: 24px;
-  padding: 12px 16px;
-  background-color: #40444b;
-  border: none;
+  border-radius: 25px;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: #f1f3f4;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(20px);
 
   &:focus {
-    background-color: #484c52;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  }
+
+  &::placeholder {
+    color: #a0a6b0;
   }
 `;
 
 const SendButton = styled(Button)`
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
 `;
 
 // const TypingIndicator = styled.div`
@@ -217,12 +308,22 @@ const EmptyMessages = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #72767d;
+  color: #a0a6b0;
   text-align: center;
+  padding: 40px;
 
   h3 {
-    color: #dcddde;
-    margin-bottom: 8px;
+    color: #f1f3f4;
+    margin-bottom: 16px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    font-size: 16px;
+    opacity: 0.8;
+    line-height: 1.5;
   }
 `;
 

@@ -29,12 +29,34 @@ const AppRoutes: React.FC = () => {
       <div style={{ 
         height: '100vh', 
         display: 'flex', 
+        flexDirection: 'column',
         alignItems: 'center', 
         justifyContent: 'center',
-        backgroundColor: '#36393f',
-        color: '#dcddde'
+        background: 'linear-gradient(135deg, #2f3136 0%, #36393f 50%, #3c4043 100%)',
+        color: '#f1f3f4'
       }}>
-        Loading...
+        <div style={{
+          width: '60px',
+          height: '60px',
+          border: '3px solid rgba(102, 126, 234, 0.2)',
+          borderTop: '3px solid #667eea',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+          marginBottom: '24px'
+        }} />
+        <div style={{
+          fontSize: '18px',
+          fontWeight: '600',
+          letterSpacing: '0.025em'
+        }}>
+          Loading...
+        </div>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
       </div>
     );
   }

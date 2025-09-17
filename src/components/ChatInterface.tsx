@@ -12,18 +12,22 @@ import { FriendService } from '../services/friendService';
 import { Users, Plus } from 'lucide-react';
 
 const SidebarHeader = styled.div`
-  padding: 20px;
-  border-bottom: 1px solid #202225;
+  padding: 24px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(10px);
 `;
 
 const SidebarTitle = styled.h2`
-  color: #dcddde;
-  font-size: 16px;
-  font-weight: 600;
+  color: #f1f3f4;
+  font-size: 17px;
+  font-weight: 700;
   margin: 0;
+  letter-spacing: 0.025em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const HeaderActions = styled.div`
@@ -32,17 +36,25 @@ const HeaderActions = styled.div`
 `;
 
 const IconButton = styled.button`
-  background: none;
-  border: none;
-  color: #72767d;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a0a6b0;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  padding: 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 
   &:hover {
-    background-color: #40444b;
-    color: #dcddde;
+    background: rgba(255, 255, 255, 0.1);
+    color: #f1f3f4;
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -58,48 +70,92 @@ const ChatsList = styled.div`
 const Modal = styled.div<{ show: boolean }>`
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   display: ${({ show }) => (show ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
   z-index: 1100;
+  animation: ${({ show }) => show ? 'fadeIn 0.3s ease' : 'none'};
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      backdrop-filter: blur(0px);
+    }
+    to {
+      opacity: 1;
+      backdrop-filter: blur(8px);
+    }
+  }
 `;
 
 const ModalContent = styled.div`
-  background-color: #36393f;
-  border-radius: 8px;
-  padding: 20px;
-  width: 520px;
+  background: linear-gradient(135deg, #2f3136 0%, #36393f 100%);
+  border-radius: 16px;
+  padding: 32px;
+  width: 540px;
   max-width: 92vw;
-  max-height: 80vh;
+  max-height: 85vh;
   overflow: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slideUp 0.3s ease;
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
 `;
 
 const ModalTitle = styled.h3`
-  color: #dcddde;
-  margin: 0 0 12px 0;
-  font-size: 18px;
+  color: #f1f3f4;
+  margin: 0 0 24px 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
 `;
 
 const ModalSection = styled.div`
-  margin-top: 12px;
+  margin-top: 20px;
 `;
 
 const Label = styled.label`
   display: block;
-  color: #dcddde;
-  font-size: 14px;
-  margin-bottom: 6px;
+  color: #f1f3f4;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  letter-spacing: 0.025em;
 `;
 
 const TextInput = styled.input`
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #202225;
-  background-color: #40444b;
-  color: #dcddde;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #f1f3f4;
   outline: none;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+
+  &:focus {
+    border-color: #667eea;
+    background-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  &::placeholder {
+    color: #a0a6b0;
+  }
 `;
 
 const FriendsSelectList = styled.div`
@@ -129,23 +185,54 @@ const ModalActions = styled.div`
 `;
 
 const PrimaryButton = styled.button`
-  background-color: #5865f2;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
+  border-radius: 10px;
+  padding: 14px 24px;
   cursor: pointer;
-  font-weight: 500;
-  &:disabled { opacity: 0.6; cursor: not-allowed; }
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled { 
+    opacity: 0.6; 
+    cursor: not-allowed;
+    transform: none;
+  }
 `;
 
 const SecondaryButton = styled.button`
-  background-color: #4f545c;
-  color: #dcddde;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f1f3f4;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 14px 24px;
   cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 `;
 
 interface ChatItemProps {
@@ -155,30 +242,61 @@ interface ChatItemProps {
 const ChatItem = styled.div<ChatItemProps>`
   display: flex;
   align-items: center;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
   cursor: pointer;
-  margin-bottom: 4px;
-  background-color: ${({ active }) => active ? '#5865f2' : 'transparent'};
-  transition: background-color 0.2s ease;
+  margin-bottom: 6px;
+  background-color: ${({ active }) => active ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent'};
+  background: ${({ active }) => active ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent'};
+  border: 1px solid ${({ active }) => active ? 'rgba(102, 126, 234, 0.3)' : 'transparent'};
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${({ active }) => active ? 'none' : 'rgba(255, 255, 255, 0.02)'};
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
   &:hover {
-    background-color: ${({ active }) => active ? '#5865f2' : '#40444b'};
+    background: ${({ active }) => active ? 'linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)' : 'rgba(255, 255, 255, 0.05)'};
+    border-color: ${({ active }) => active ? 'rgba(102, 126, 234, 0.4)' : 'rgba(255, 255, 255, 0.1)'};
+    transform: translateX(4px);
+    box-shadow: ${({ active }) => active ? '0 4px 20px rgba(102, 126, 234, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.1)'};
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 `;
 
 const ChatItemAvatar = styled.div`
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background-color: #5865f2;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-weight: 500;
-  margin-right: 12px;
-  font-size: 14px;
+  font-weight: 600;
+  margin-right: 14px;
+  font-size: 15px;
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+
+  ${ChatItem}:hover & {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  }
 `;
 
 const ChatItemInfo = styled.div`
@@ -186,18 +304,22 @@ const ChatItemInfo = styled.div`
 `;
 
 const ChatItemName = styled.div`
-  color: #dcddde;
-  font-weight: 500;
-  font-size: 14px;
+  color: #f1f3f4;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 2px;
+  letter-spacing: 0.01em;
 `;
 
 const ChatItemLastMessage = styled.div`
-  color: #72767d;
-  font-size: 12px;
-  margin-top: 2px;
+  color: #a0a6b0;
+  font-size: 13px;
+  margin-top: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  opacity: 0.9;
+  font-weight: 400;
 `;
 
 const EmptyState = styled.div`
@@ -206,13 +328,22 @@ const EmptyState = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #72767d;
+  color: #a0a6b0;
   text-align: center;
-  padding: 40px;
+  padding: 60px 40px;
 
   h3 {
-    margin-bottom: 10px;
-    color: #dcddde;
+    margin-bottom: 16px;
+    color: #f1f3f4;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    font-size: 16px;
+    opacity: 0.8;
+    line-height: 1.5;
   }
 `;
 

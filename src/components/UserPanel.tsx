@@ -5,19 +5,21 @@ import { Avatar, StatusIndicator } from '../styles/GlobalStyles';
 import { Settings, LogOut, Mic, MicOff, Headphones } from 'lucide-react';
 
 const Panel = styled.div`
-  padding: 10px;
-  background-color: #292b2f;
-  border-top: 1px solid #202225;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #1e1f23 0%, #292b2f 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const UserInfo = styled.div`
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const UserDetails = styled.div`
@@ -25,20 +27,30 @@ const UserDetails = styled.div`
 `;
 
 const UserName = styled.div`
-  color: #dcddde;
-  font-size: 14px;
-  font-weight: 500;
+  color: #f1f3f4;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin-bottom: 2px;
 `;
 
 const UserStatus = styled.div`
-  color: #72767d;
-  font-size: 12px;
+  color: #a0a6b0;
+  font-size: 13px;
   text-transform: capitalize;
+  opacity: 0.9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: #667eea;
+    opacity: 1;
+  }
 `;
 
 const Controls = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 6px;
 `;
 
 interface ControlButtonProps {
@@ -46,23 +58,42 @@ interface ControlButtonProps {
 }
 
 const ControlButton = styled.button<ControlButtonProps>`
-  background: none;
-  border: none;
-  color: ${({ active }) => active ? '#23a559' : '#72767d'};
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: ${({ active }) => active ? '#00d26a' : '#a0a6b0'};
   cursor: pointer;
-  padding: 6px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  padding: 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
 
   &:hover {
-    background-color: #40444b;
-    color: ${({ active }) => active ? '#23a559' : '#dcddde'};
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: ${({ active }) => active ? '#00d26a' : '#f1f3f4'};
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  &.danger:hover {
-    background-color: #ed4245;
-    color: white;
+  &:active {
+    transform: translateY(0);
   }
+
+  &.danger {
+    &:hover {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      border-color: #ef4444;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+  }
+
+  ${({ active }) => active && `
+    background: rgba(0, 210, 106, 0.15);
+    border-color: rgba(0, 210, 106, 0.3);
+    box-shadow: 0 0 0 2px rgba(0, 210, 106, 0.1);
+  `}
 `;
 
 interface StatusMenuProps {
@@ -73,14 +104,28 @@ const StatusMenu = styled.div<StatusMenuProps>`
   position: absolute;
   bottom: 100%;
   left: 0;
-  background-color: #18191c;
-  border-radius: 6px;
-  padding: 6px;
-  margin-bottom: 8px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
+  background: linear-gradient(135deg, #1a1b1e 0%, #2f3136 100%);
+  border-radius: 12px;
+  padding: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.08);
   display: ${({ show }) => show ? 'block' : 'none'};
   z-index: 1000;
-  min-width: 120px;
+  min-width: 140px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: ${({ show }) => show ? 'slideUp 0.2s ease-out' : 'none'};
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 `;
 
 interface StatusOptionProps {
@@ -88,34 +133,39 @@ interface StatusOptionProps {
 }
 
 const StatusOption = styled.div<StatusOptionProps>`
-  padding: 8px 12px;
-  border-radius: 4px;
+  padding: 10px 14px;
+  border-radius: 8px;
   cursor: pointer;
-  color: #dcddde;
+  color: #f1f3f4;
   font-size: 14px;
+  font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: background-color 0.2s ease;
+  gap: 10px;
+  transition: all 0.2s ease;
+  margin: 2px 0;
 
   &:hover {
-    background-color: #5865f2;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transform: translateX(2px);
   }
 
   &::before {
     content: '';
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
     background-color: ${({ status }) => {
       switch (status) {
-        case 'online': return '#3ba55c';
-        case 'away': return '#faa61a';
-        case 'busy': return '#ed4245';
-        case 'offline': return '#747f8d';
-        default: return '#747f8d';
+        case 'online': return '#00d26a';
+        case 'away': return '#fbbf24';
+        case 'busy': return '#ef4444';
+        case 'offline': return '#6b7280';
+        default: return '#6b7280';
       }
     }};
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
   }
 `;
 
